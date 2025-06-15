@@ -1,0 +1,53 @@
+{
+  "window.zoomLevel": 0,
+  "editor.fontSize": 14,
+  "editor.hover.enabled": true,
+  "workbench.startupEditor": "none",
+  "explorer.compactFolders": false,
+  "terminal.integrated.fontSize": 14,
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "workbench.colorTheme": "Dracula Theme Soft",
+  "workbench.iconTheme": "material-icon-theme",
+  "code-runner.executorMap": {
+    "python": "clear ; python -u"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.ignoreSelection": true,
+  "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro', 'Fira Code', Menlo, 'Inconsolata', 'Droid Sans Mono', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', Courier, Monaco, monospace",
+  "terminal.integrated.fontFamily": "",
+  "editor.fontLigatures": false,
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+  },
+  "python.languageServer": "Pylance",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportUnknownMemberType": "none",
+    "reportUnknownArgumentType": "none",
+    "reportUnknownVariableType": "none",
+    "reportUnknownLambdaType": "none",
+    "reportUnknownParameterType": "none"
+  },
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.analysis.typeCheckingMode": "standard",
+  "python.analysis.autoImportCompletions": true,
+  "emmet.includeLanguages": {
+    "django-html": "html"
+  },
+  "[django-html]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.suggest.insertMode": "insert",
+    "editor.defaultFormatter": "monosans.djlint",
+    "editor.formatOnSave": true
+  }
+}
