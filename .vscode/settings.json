@@ -1,32 +1,25 @@
 {
+  // ===== 🌐 Janela e Aparência =====
   "window.zoomLevel": 0,
-  "editor.fontSize": 14,
-  "editor.hover.enabled": true,
+  "workbench.colorTheme": "Dracula Theme Soft",
+  "workbench.iconTheme": "material-icon-theme",
   "workbench.startupEditor": "none",
-  "explorer.compactFolders": false,
-  "terminal.integrated.fontSize": 14,
+  // ===== 📝 Editor Global =====
+  "editor.fontSize": 14,
+  "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro'",
+  "editor.fontLigatures": false,
   "editor.rulers": [
     80,
     120
   ],
-  "workbench.colorTheme": "Dracula Theme Soft",
-  "workbench.iconTheme": "material-icon-theme",
-  "code-runner.executorMap": {
-    "python": "clear ; python -u"
+  "editor.hover.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
   },
-  "code-runner.runInTerminal": true,
-  "code-runner.ignoreSelection": true,
-  "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro', 'Fira Code', Menlo, 'Inconsolata', 'Droid Sans Mono', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', Courier, Monaco, monospace",
-  "terminal.integrated.fontFamily": "",
-  "editor.fontLigatures": false,
-  "[python]": {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.formatOnSave": true,
-  },
-  "python.languageServer": "Pylance",
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
+  // ===== 🐍 Python =====
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.analysis.typeCheckingMode": "standard",
+  "python.analysis.autoImportCompletions": true,
   "python.analysis.diagnosticSeverityOverrides": {
     "reportUnknownMemberType": "none",
     "reportUnknownArgumentType": "none",
@@ -34,9 +27,22 @@
     "reportUnknownLambdaType": "none",
     "reportUnknownParameterType": "none"
   },
-  "python.defaultInterpreterPath": "./venv/bin/python",
-  "python.analysis.typeCheckingMode": "standard",
-  "python.analysis.autoImportCompletions": true,
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+  },
+  // ===== 💻 Terminal =====
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontFamily": "",
+  // ===== ▶️ Code Runner =====
+  "code-runner.executorMap": {
+    "python": "clear ; python -u"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.ignoreSelection": true,
+  // ===== 🌐 Django HTML =====
   "emmet.includeLanguages": {
     "django-html": "html"
   },
