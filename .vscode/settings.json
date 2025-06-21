@@ -9,12 +9,12 @@
   "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro'",
   "editor.fontLigatures": false,
   "editor.rulers": [
-    80,
-    120
+    100,
+    140
   ],
   "editor.hover.enabled": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    "source.organizeImports": "explicit"
   },
   // ===== 🐍 Python =====
   "python.defaultInterpreterPath": "./venv/bin/python",
@@ -27,6 +27,9 @@
     "reportUnknownLambdaType": "none",
     "reportUnknownParameterType": "none"
   },
+  "flake8.ignorePatterns": [
+    "E501"
+  ],
   "[python]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
@@ -46,6 +49,10 @@
   "emmet.includeLanguages": {
     "django-html": "html"
   },
+  "djlint.ignore": [
+    "H030",
+    "H031"
+  ],
   "[django-html]": {
     "editor.quickSuggestions": {
       "other": true,
@@ -54,6 +61,6 @@
     },
     "editor.suggest.insertMode": "insert",
     "editor.defaultFormatter": "monosans.djlint",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   }
 }
