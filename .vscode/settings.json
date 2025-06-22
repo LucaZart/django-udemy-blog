@@ -52,7 +52,9 @@
   "djlint.ignore": [
     "H030",
     "H031",
-    "H016"
+    "H016",
+    "T002",
+    "H006",
   ],
   "[django-html]": {
     "editor.quickSuggestions": {
