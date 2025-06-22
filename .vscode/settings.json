@@ -9,8 +9,8 @@
   "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro'",
   "editor.fontLigatures": false,
   "editor.rulers": [
-    100,
-    140
+    90,
+    130
   ],
   "editor.hover.enabled": true,
   "editor.codeActionsOnSave": {
@@ -29,6 +29,9 @@
   },
   "flake8.ignorePatterns": [
     "E501"
+  ],
+  "flake8.args": [
+    "--max-line-length=90",
   ],
   "[python]": {
     "editor.tabSize": 4,
