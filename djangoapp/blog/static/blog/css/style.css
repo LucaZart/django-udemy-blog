@@ -228,6 +228,10 @@ html,
 	padding-bottom: var(--spacing-base);
 }
 
+.mt-base {
+	padding-top: var(--spacing-base);
+}
+
 .center {
 	text-align: center;
 }
