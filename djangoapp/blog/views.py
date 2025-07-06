@@ -72,6 +72,24 @@ class CreatedByListView(PostListView):
         return qs
 
 
+class CategoryListView(PostListView):
+    allow_empty = False
+
+    def get_queryset(self):
+        return super().get_queryset().filter(category__slug=self.kwargs.get("slug"))
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        page_title = f"{self.object_list[0].category.name} - "  # type: ignore
+
+        context.update(
+            {
+                "page_title": page_title,
+            }
+        )
+        return context
+
+
 def category(request, slug):
     posts = Post.object.get_published().filter(category__slug=slug)
 
