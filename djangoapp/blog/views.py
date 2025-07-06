@@ -1,7 +1,8 @@
 from typing import Any
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404
+from django.db.models.query import QuerySet
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 from blog.models import Page, Post
 from django.contrib.auth.models import User
@@ -11,10 +12,8 @@ PER_PAGE = 9
 
 
 class PostListView(ListView):
-    model = Post
     template_name = "blog/pages/index.html"
     context_object_name = "posts"
-    ordering = ("-pk",)
     paginate_by = PER_PAGE
     queryset = Post.object.get_published()
 
@@ -30,48 +29,47 @@ class PostListView(ListView):
         return context
 
 
-# def index(request):
-#     posts = Post.object.get_published()
+class CreatedByListView(PostListView):
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self._temp_context: dict[str, Any] = {}
 
-#     paginator = Paginator(posts, PER_PAGE)
-#     page_number = request.GET.get("page")
-#     page_obj = paginator.get_page(page_number)
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        author_id = self.kwargs.get("author_id")
+        user = User.objects.filter(pk=author_id).first()
 
-#     return render(
-#         request,
-#         "blog/pages/index.html",
-#         {
-#             "page_obj": page_obj,
-#             "page_title": "Home - ",
-#         },
-#     )
+        if user is None:
+            raise Http404()
 
+        self._temp_context = {
+            "author_id": author_id,
+            "user": user,
+        }
 
-def created_by(request, author_id):
-    posts = Post.object.get_published().filter(created_by__pk=author_id)
-    user = User.objects.filter(pk=author_id).first()
+        return super().get(request, *args, **kwargs)
 
-    if user is None:
-        raise Http404
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        user = self._temp_context["user"]
 
-    user_full_name = user.username
-    if user.first_name:
-        user_full_name = f"{user.first_name} {user.last_name}"
+        user_full_name = user.username
+        if user.first_name:
+            user_full_name = f"{user.first_name}"
 
-    page_title = f"Posts de {user_full_name}"
+        page_title = f"Posts de {user_full_name}"
 
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+        context.update(
+            {
+                "page_title": page_title,
+            }
+        )
 
-    return render(
-        request,
-        "blog/pages/index.html",
-        {
-            "page_obj": page_obj,
-            "page_title": page_title,
-        },
-    )
+        return context
+
+    def get_queryset(self) -> QuerySet[Any]:
+        qs = super().get_queryset()
+        qs = qs.filter(created_by__pk=self._temp_context["user"].pk)
+        return qs
 
 
 def category(request, slug):
