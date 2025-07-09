@@ -2,7 +2,7 @@ from typing import Any
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from blog.models import Page, Post
 from django.contrib.auth.models import User
 from django.views.generic import ListView
@@ -107,8 +107,51 @@ class TagListView(PostListView):
         return context
 
 
+class SearchListView(PostListView):
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self._search_value: str = ""
+
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
+        self._search_value = request.GET.get("search", "").strip()
+        return super().setup(request, *args, **kwargs)
+
+    def get_queryset(self) -> QuerySet[Any]:
+        search_value = self._search_value
+
+        qs = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(title__icontains=search_value)
+                | Q(excerpt__icontains=search_value)
+                | Q(content__icontains=search_value)
+            )[:PER_PAGE]
+        )
+        return qs
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        search_value = self._search_value
+
+        context.update(
+            {
+                "page_title": f"{search_value[:30]} - ",
+                "search_value": search_value,
+            }
+        )
+
+        return context
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self._search_value == "":
+            return redirect("blog:index")
+        return super().get(request, *args, **kwargs)
+
+
 def search(request):
     search_value = request.GET.get("search", "").strip()
+
     posts = Post.object.get_published().filter(
         Q(title__icontains=search_value)
         | Q(excerpt__icontains=search_value)
