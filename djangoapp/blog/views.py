@@ -1,5 +1,4 @@
 from typing import Any
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse
@@ -90,48 +89,22 @@ class CategoryListView(PostListView):
         return context
 
 
-def category(request, slug):
-    posts = Post.object.get_published().filter(category__slug=slug)
+class TagListView(PostListView):
+    allow_empty = False
 
-    if len(posts) == 0:
-        raise Http404
+    def get_queryset(self):
+        return super().get_queryset().filter(tag__slug=self.kwargs.get("slug"))
 
-    page_title = f"{posts[0].category.name} - "
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        page_title = f"{self.object_list[0].tag.first().name} - "  # type: ignore
 
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    return render(
-        request,
-        "blog/pages/index.html",
-        {
-            "page_obj": page_obj,
-            "page_title": page_title,
-        },
-    )
-
-
-def tag(request, slug):
-    posts = Post.object.get_published().filter(tag__slug=slug)
-
-    if len(posts) == 0:
-        raise Http404
-
-    page_title = f"{posts[0].tag.first().name} - "
-
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    return render(
-        request,
-        "blog/pages/index.html",
-        {
-            "page_obj": page_obj,
-            "page_title": page_title,
-        },
-    )
+        context.update(
+            {
+                "page_title": page_title,
+            }
+        )
+        return context
 
 
 def search(request):
