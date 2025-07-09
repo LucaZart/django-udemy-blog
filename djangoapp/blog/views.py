@@ -5,7 +5,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from blog.models import Page, Post
 from django.contrib.auth.models import User
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 PER_PAGE = 9
 
@@ -149,44 +149,25 @@ class SearchListView(PostListView):
         return super().get(request, *args, **kwargs)
 
 
-def search(request):
-    search_value = request.GET.get("search", "").strip()
+class PageDetailView(DetailView):
+    model = Page
+    template_name = "blog/pages/page.html"
+    slug_field = "slug"
+    context_object_name = "page"
 
-    posts = Post.object.get_published().filter(
-        Q(title__icontains=search_value)
-        | Q(excerpt__icontains=search_value)
-        | Q(content__icontains=search_value)
-    )[:PER_PAGE]
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        page = self.get_object()
+        page_title = f"{page.title} - "  # type:ignore
+        context.update(
+            {
+                "page_title": page_title,
+            }
+        )
+        return context
 
-    page_title = f"{search_value[:30]} - "
-
-    return render(
-        request,
-        "blog/pages/index.html",
-        {
-            "page_obj": posts,
-            "search_value": search_value,
-            "page_title": page_title,
-        },
-    )
-
-
-def page(request, slug):
-    page_obj = Page.objects.filter(is_published=True).filter(slug=slug).first()
-
-    if page_obj is None:
-        raise Http404
-
-    page_title = f"{page_obj.title} - "
-
-    return render(
-        request,
-        "blog/pages/page.html",
-        {
-            "page": page_obj,
-            "page_title": page_title,
-        },
-    )
+    def get_queryset(self) -> QuerySet[Any]:
+        return super().get_queryset().filter(is_published=True)
 
 
 def post(request, slug):
