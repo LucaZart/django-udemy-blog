@@ -2,7 +2,7 @@ from typing import Any
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from blog.models import Page, Post
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
@@ -170,19 +170,22 @@ class PageDetailView(DetailView):
         return super().get_queryset().filter(is_published=True)
 
 
-def post(request, slug):
-    post_obj = Post.object.get_published().filter(slug=slug).first()
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "blog/pages/post.html"
+    slug_field = "slug"
+    context_object_name = "post"
 
-    if post_obj is None:
-        raise Http404
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        page = self.get_object()
+        page_title = f"{page.title} - "  # type:ignore
+        context.update(
+            {
+                "page_title": page_title,
+            }
+        )
+        return context
 
-    page_title = f"{post_obj.title} - "
-
-    return render(
-        request,
-        "blog/pages/post.html",
-        {
-            "post": post_obj,
-            "page_title": page_title,
-        },
-    )
+    def get_queryset(self) -> QuerySet[Any]:
+        return super().get_queryset().filter(is_published=True)
